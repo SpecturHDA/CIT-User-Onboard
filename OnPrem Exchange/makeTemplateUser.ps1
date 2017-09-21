@@ -10,14 +10,14 @@ Write-Host "********************************************************************
 *  This script creates the 'templateuser' but you'll need to gather the appropriate locations/information below:
 *******************************************************************************************************************
 *  Profile Path - the root folder where roaming profiles are stored
-*    (i.e \\servername\profilefolder)
+*    (i.e \\servername\profilefolder\)
 *
 *  Home Drive Letter - the drive letter for a home drive
 *    (i.e. 'H:' , or 'U:')
 *
 *  Home Directory - the root folder where user directories are stored;
 *    in most cases this will be the same as the profile folder
-*    (i.e. \\servername\profilefolder)
+*    (i.e. \\servername\profilefolder\)
 *
 *  Login Script Path - this can be a full UNC path or just the batch script
 *    (i.e. \\servername\foldername\script.bat) or (i.e login.bat)
@@ -31,16 +31,29 @@ $UPN = $samaccountname + "@" + (Get-ADDomain).dnsroot
 $newPassword = (Read-Host -Prompt "Provide New Password" -AsSecureString)
 $OU = Get-UserOU
 
-$profilepath = (Read-Host -Prompt "Profile Path")
-If ($profilepath -ne $null)
+$profilepath = (Read-Host -Prompt "Profile Path (\\servername\profilefolder\)")
+If ($profilepath -eq "")
 {
-  $profilepath = $profilepath.substring(0,$profilepath.LastIndexOf('\')) + "\$samaccountname"
+  break
+} else {
+  If ($profilepath[($profilepath.Length)-1] -eq "\")  {
+    $profilepath = $profilepath.substring(0,$profilepath.LastIndexOf('\')) + "\$samaccountname"
+  } else {
+    $profilepath += "\"
+    $profilepath = $profilepath.substring(0,$profilepath.LastIndexOf('\')) + "\$samaccountname"
+  }
 }
-$homedrive = (Read-Host -Prompt "Home Drive Letter")
-$homedirectory = (Read-Host -Prompt "Home Directory")
-If ($homedirectory -ne $null)
-{
-  $homedirectory = $homedirectory.substring(0,$homedirectory.LastIndexOf('\')) + "\$samaccountname"
+$homedrive = (Read-Host -Prompt "Home Drive Letter (H:)")
+$homedirectory = (Read-Host -Prompt "Home Directory (\\servername\profilefolder\)")
+If ($homedirectory -eq ""){
+  break
+} else {
+  If ($homedirectory[($homedirectory.Length)-1] -eq "\")  {
+    $homedirectory = $homedirectory.substring(0,$homedirectory.LastIndexOf('\')) + "\$samaccountname"
+  } else {
+    $homedirectory += "\"
+    $homedirectory = $homedirectory.substring(0,$homedirectory.LastIndexOf('\')) + "\$samaccountname"
+  }
 }
 $scriptpath = (Read-Host -Prompt "Login Script Path")
 

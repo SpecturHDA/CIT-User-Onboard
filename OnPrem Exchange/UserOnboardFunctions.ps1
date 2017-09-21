@@ -41,7 +41,7 @@ Function Get-UserOU
       Write-Host($linecounter.ToString() + ". " + $item)
       $linecounter++
     }
-    `r`n
+    Write-host "`r`n"
     $UserOU = $OUDistinguished[[int](Read-Host -Prompt "Please enter the number of the OU you wish to place this new user in (i.e. 1 or 17)")]
 
     return $UserOU
