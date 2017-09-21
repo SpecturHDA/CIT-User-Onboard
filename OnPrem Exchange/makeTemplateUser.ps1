@@ -3,6 +3,8 @@ import-module activedirectory
 $ScriptDirectory = $MyInvocation.MyCommand.Path
 $ScriptDirectory = $ScriptDirectory.substring(0,$ScriptDirectory.LastIndexOf('\'))
 
+. (Join-Path $ScriptDirectory UserOnboardFunctions.ps1)
+
 Write-Host "*******************************************************************************************************************
 *  The user onboard script copies certain information from an AD user name 'templateuser' to create a new user.
 *  This script creates the 'templateuser' but you'll need to gather the appropriate locations/information below:
@@ -29,10 +31,18 @@ $UPN = $samaccountname + "@" + (Get-ADDomain).dnsroot
 $newPassword = (Read-Host -Prompt "Provide New Password" -AsSecureString)
 $OU = Get-UserOU
 
-$profilepath = (Read-Host -Prompt "Profile Path:")
-$homedrive = (Read-Host -Prompt "Home Drive Letter:")
-$homedirectory = (Read-Host -Prompt "Home Directory:")
-$scriptpath = (Read-Host -Prompt "Login Script Path:")
+$profilepath = (Read-Host -Prompt "Profile Path")
+If ($profilepath -ne $null)
+{
+  $profilepath = $profilepath.substring(0,$profilepath.LastIndexOf('\')) + "\$samaccountname"
+}
+$homedrive = (Read-Host -Prompt "Home Drive Letter")
+$homedirectory = (Read-Host -Prompt "Home Directory")
+If ($homedirectory -ne $null)
+{
+  $homedirectory = $homedirectory.substring(0,$homedirectory.LastIndexOf('\')) + "\$samaccountname"
+}
+$scriptpath = (Read-Host -Prompt "Login Script Path")
 
 new-aduser -name  $fullname -givenname $firstname -surname $lastname -displayname $fullname -userprincipalname $UPN -samaccountname $samaccountname -accountpassword $newPassword -path $OU -profilepath $profilepath -HomeDrive $homedrive -HomeDirectory $HomeDirectory -scriptpath $scriptpath -passthru | Enable-ADAccount
 
@@ -46,3 +56,5 @@ Get-ADUser -Identity $samaccountname -Properties * | fl displayname,userprincipa
 Write-Host "*******************************************************************************************************************
 *  You can now use the User Onboard script located in the same folder.
 *******************************************************************************************************************" -ForegroundColor Yellow
+
+Pause
