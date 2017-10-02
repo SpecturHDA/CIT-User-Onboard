@@ -1,5 +1,6 @@
 clear-host
 import-module activedirectory
+Add-PSSnapin Microsoft.Exchange.Management.PowerShell.SnapIn
 $ScriptDirectory = $MyInvocation.MyCommand.Path
 $ScriptDirectory = $ScriptDirectory.substring(0,$ScriptDirectory.LastIndexOf('\'))
 
@@ -32,7 +33,7 @@ If ($homedirectory -ne $null)
 $scriptpath = (get-aduser templateuser -Properties *).scriptpath
 $jobtitle = (Read-Host -Prompt "Job Title")
 $department = (Read-Host -Prompt "Department")
-$manager = (Read-Host -Prompt "Manager")
+$manager = (Read-Host -Prompt "Manager (i.e. Jdoe)")
 
 new-aduser -name  $fullname -givenname $firstname -surname $lastname -displayname $fullname -userprincipalname $UPN -samaccountname $samaccountname -accountpassword $newPassword -path $OU -profilepath $profilepath -HomeDrive $homedrive -HomeDirectory $HomeDirectory -scriptpath $scriptpath -title $jobtitle -description $jobtitle -department $department -manager $manager -passthru | Enable-ADAccount
 
@@ -55,3 +56,5 @@ Write-Host "*********************************************"
 
 #Close PSSession
 #get-pssession | remove-pssession
+
+Pause

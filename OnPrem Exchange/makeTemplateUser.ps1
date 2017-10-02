@@ -43,7 +43,7 @@ If ($profilepath -eq "")
     $profilepath = $profilepath.substring(0,$profilepath.LastIndexOf('\')) + "\$samaccountname"
   }
 }
-$homedrive = (Read-Host -Prompt "Home Drive Letter (H:)")
+$homedrive = (Read-Host -Prompt "Home Drive Letter (i.e. H: , Default is blank)")
 $homedirectory = (Read-Host -Prompt "Home Directory (\\servername\profilefolder\)")
 If ($homedirectory -eq ""){
   break
@@ -64,10 +64,10 @@ Write-Host "*********************************************"
 Write-Host "User account created!" -ForegroundColor Yellow -BackgroundColor DarkGreen
 Write-Host "*********************************************"
 
-Get-ADUser -Identity $samaccountname -Properties * | fl displayname,userprincipalname,samaccountname,DistinguishedName,homedrive,Homedirectory,scriptpath,title,description,Department,manager,Enabled
+Get-ADUser -Identity $samaccountname -Properties * | fl displayname,userprincipalname,samaccountname,DistinguishedName,homedrive,Homedirectory,scriptpath,profilepath,title,description,Department,manager,Enabled
 
 Write-Host "*******************************************************************************************************************
-*  You can now use the User Onboard script located in the same folder.
+*  You can now use the useronboard_OnPremExchange.ps1 script located in the same folder.
 *******************************************************************************************************************" -ForegroundColor Yellow
 
 Pause
